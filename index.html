@@ -9,6 +9,36 @@
 <body>
 <header class="topbar">
 <div class="brand">Comercial LUFA</div>
+<div class="searchbar">
+  <input id="searchInput" type="text" placeholder="Buscar productos" />
+  <select id="filterCategory">
+    <option value="">Todas</option>
+    <option>lacteos</option>
+    <option>carne</option>
+    <option>dulces</option>
+    <option>pescado</option>
+    <option>frutas</option>
+    <option>productos secos</option>
+    <option>enlatados</option>
+    <option>limpieza del hogar</option>
+    <option>cuidado personal</option>
+    <option>bebidas</option>
+    <option>arroz</option>
+    <option>fideos</option>
+    <option>yogurt</option>
+    <option>legumbres</option>
+    <option>sopas</option>
+    <option>sal</option>
+    <option>condimentos</option>
+    <option>verduras</option>
+    <option>vinos</option>
+    <option>cerveza</option>
+    <option>destilados</option>
+    <option>jugos</option>
+    <option>agua</option>
+  </select>
+  <button id="searchBtn">Buscar</button>
+  </div>
 <div class="top-actions">
 <button id="goShop">Tienda</button>
 <button id="loginTop">Iniciar sesión</button>
@@ -52,13 +82,18 @@
 <h2>Catálogo</h2>
 <div id="welcome"></div>
 </div>
+<div id="chipFilters" class="chips"></div>
 <div id="catalog" class="grid"></div>
 </section>
 
 <section id="adminSection" class="hidden">
 <h2>Administrador</h2>
-<div class="admin-grid">
-<div class="card">
+<div class="subtabs">
+  <button id="tabAdminAdd" class="active">Agregar producto</button>
+  <button id="tabAdminEdit">Editar producto</button>
+  <button id="tabAdminOrders">Pedidos</button>
+</div>
+<section id="adminAddSection" class="card">
 <h3>Agregar producto</h3>
 <div class="form">
 <label>Nombre</label>
@@ -69,19 +104,54 @@
 <input id="newImage" type="url" />
 <label>Imagen local (opcional)</label>
 <input id="newImageFile" type="file" accept="image/*" />
+<label>Categoría</label>
+<select id="newCategory">
+  <option>lacteos</option>
+  <option>carne</option>
+  <option>dulces</option>
+  <option>pescado</option>
+  <option>frutas</option>
+  <option>productos secos</option>
+  <option>enlatados</option>
+  <option>limpieza del hogar</option>
+  <option>cuidado personal</option>
+  <option>bebidas</option>
+  <option>arroz</option>
+  <option>fideos</option>
+  <option>yogurt</option>
+  <option>legumbres</option>
+  <option>sopas</option>
+  <option>sal</option>
+  <option>condimentos</option>
+  <option>verduras</option>
+  <option>vinos</option>
+  <option>cerveza</option>
+  <option>destilados</option>
+  <option>jugos</option>
+  <option>agua</option>
+</select>
 <button id="addProductBtn">Agregar</button>
 </div>
-</div>
-<div class="card">
+</section>
+<section id="adminEditSection" class="card hidden">
 <h3>Productos</h3>
 <div id="adminProducts"></div>
-</div>
-<div class="card">
+</section>
+<section id="adminOrdersSection" class="card hidden">
 <h3>Pedidos (simulados)</h3>
 <div id="adminOrdersCount"></div>
 <div id="adminOrders"></div>
+<div id="adminOrderDetail" class="hidden">
+  <h3>Detalle del pedido</h3>
+  <div id="adminOrderMeta"></div>
+  <div id="adminOrderTable" class="table"></div>
+  <div class="cart-total">
+    <span>Total:</span>
+    <span id="adminOrderTotal"></span>
+  </div>
+  <button id="closeOrderDetail" class="secondary">Cerrar</button>
 </div>
-</div>
+</section>
 </section>
 
 <section id="cartSection" class="card hidden">
@@ -92,15 +162,24 @@
 <span>Total:</span>
 <span id="cartTotalPage"></span>
 </div>
-<button id="checkoutBtn">Pagar con Webpay</button>
+<button id="checkoutBtn">Pagar</button>
+<div class="card" style="margin-top:12px">
+  <div><b>¿Tienes algun problema?, Contactanos:</b></div>
+  <div><b>Dirección:</b> Av. Sur 2486, 9271738 Maipú, Santiago, Región Metropolitana</div>
+  <div><b>WhatsApp:</b> +56977852777</div>
+</div>
 </section>
 
 <section id="profileSection" class="card hidden">
 <h2>Perfil</h2>
 <div class="form">
 <div>Nombre: <span id="profileName"></span></div>
+<div>Cambiar nombre</div>
+<input id="profileNameInput" type="text" placeholder="Nuevo nombre" />
+<button id="profileSaveName">Guardar nombre</button>
 <div>Correo: <span id="profileEmail"></span></div>
 <div>Rol: <span id="profileRole"></span></div>
+<div id="profileMsg" class="msg hidden"></div>
 </div>
 </section>
 </main>
