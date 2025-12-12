@@ -25,9 +25,14 @@ def init_db():
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       price REAL NOT NULL,
-      image TEXT
+      image TEXT,
+      category TEXT
     )
     """)
+    try:
+      cur.execute('ALTER TABLE products ADD COLUMN category TEXT')
+    except Exception:
+      pass
     cur.execute("""
     CREATE TABLE IF NOT EXISTS orders (
       id TEXT PRIMARY KEY,
@@ -47,14 +52,14 @@ def init_db():
     cur.execute('SELECT COUNT(1) AS c FROM products')
     if cur.fetchone()['c'] == 0:
       samples = [
-        ('Arroz', 2500, 'https://images.unsplash.com/photo-1546500840-ae38253aba9b?q=80&w=800&auto=format&fit=crop'),
-        ('Aceite', 5900, 'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?q=80&w=800&auto=format&fit=crop'),
-        ('Leche', 1200, 'https://images.unsplash.com/photo-1582298538104-2910a3894900?q=80&w=800&auto=format&fit=crop'),
-        ('Huevos', 3800, 'https://images.unsplash.com/photo-1517957754645-3f4e0a3f1a9a?q=80&w=800&auto=format&fit=crop'),
+        ('Arroz', 2500, 'https://images.unsplash.com/photo-1546500840-ae38253aba9b?q=80&w=800&auto=format&fit=crop', 'productos secos'),
+        ('Aceite', 5900, 'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?q=80&w=800&auto=format&fit=crop', 'productos secos'),
+        ('Leche', 1200, 'https://images.unsplash.com/photo-1582298538104-2910a3894900?q=80&w=800&auto=format&fit=crop', 'lacteos'),
+        ('Huevos', 3800, 'https://images.unsplash.com/photo-1517957754645-3f4e0a3f1a9a?q=80&w=800&auto=format&fit=crop', 'productos secos'),
       ]
-      for n,p,img in samples:
-        cur.execute('INSERT INTO products (id,name,price,image) VALUES (?,?,?,?)',
-                    (str(uuid.uuid4()), n, float(p), img))
+      for n,p,img,cat in samples:
+        cur.execute('INSERT INTO products (id,name,price,image,category) VALUES (?,?,?,?,?)',
+                    (str(uuid.uuid4()), n, float(p), img, cat))
     con.commit()
     con.close()
 
@@ -87,7 +92,7 @@ def products():
     con = get_db()
     cur = con.cursor()
     if request.method == 'GET':
-        cur.execute('SELECT id,name,price,image FROM products')
+        cur.execute('SELECT id,name,price,image,category FROM products')
         rows = [dict(r) for r in cur.fetchall()]
         con.close()
         return cors(jsonify(rows))
@@ -95,11 +100,12 @@ def products():
     name = str(data.get('name','')).strip()
     price = float(data.get('price',0))
     image = data.get('image')
+    category = str(data.get('category') or '').strip()
     pid = str(uuid.uuid4())
-    cur.execute('INSERT INTO products (id,name,price,image) VALUES (?,?,?,?)', (pid, name, price, image))
+    cur.execute('INSERT INTO products (id,name,price,image,category) VALUES (?,?,?,?,?)', (pid, name, price, image, category))
     con.commit()
     con.close()
-    return cors(jsonify({'id': pid, 'name': name, 'price': price, 'image': image}))
+    return cors(jsonify({'id': pid, 'name': name, 'price': price, 'image': image, 'category': category}))
 
 @app.route('/api/products/<pid>', methods=['PUT', 'DELETE', 'OPTIONS'])
 def product_item(pid):
@@ -112,8 +118,8 @@ def product_item(pid):
         con.commit(); con.close()
         return cors(jsonify({'ok': True}))
     data = request.get_json(force=True)
-    name = data.get('name'); price = data.get('price'); image = data.get('image')
-    cur.execute('UPDATE products SET name=COALESCE(?,name), price=COALESCE(?,price), image=COALESCE(?,image) WHERE id=?', (name, price, image, pid))
+    name = data.get('name'); price = data.get('price'); image = data.get('image'); category = data.get('category')
+    cur.execute('UPDATE products SET name=COALESCE(?,name), price=COALESCE(?,price), image=COALESCE(?,image), category=COALESCE(?,category) WHERE id=?', (name, price, image, category, pid))
     con.commit(); con.close()
     return cors(jsonify({'ok': True}))
 
@@ -147,6 +153,20 @@ def users_login():
     if not row:
         return cors(jsonify({'error':'invalid_credentials'})), 401
     return cors(jsonify({'name': row['name'], 'role': row['role']}))
+
+@app.route('/api/users/update_name', methods=['POST', 'OPTIONS'])
+def users_update_name():
+    if request.method == 'OPTIONS':
+        return cors(make_response('', 204))
+    data = request.get_json(force=True)
+    email = str(data.get('email','')).strip().lower()
+    new_name = str(data.get('name','')).strip()
+    if not email or not new_name:
+        return cors(jsonify({'error':'invalid_request'})), 400
+    con = get_db(); cur = con.cursor()
+    cur.execute('UPDATE users SET name=? WHERE email=?', (new_name, email))
+    con.commit(); con.close()
+    return cors(jsonify({'ok': True, 'name': new_name}))
 
 @app.route('/api/pay/create', methods=['POST', 'OPTIONS'])
 def create_pay():
@@ -197,7 +217,7 @@ def simulated_pay_page(oid):
     <html><head><title>Pago simulado</title></head>
     <body style='font-family: system-ui; background:#0f172a; color:#e5e7eb;'>
     <div style='max-width:800px;margin:40px auto;background:#111827;padding:16px;border-radius:12px;'>
-    <h1>Pago simulado exitoso</h1>
+    <h1>¡Pago realizado!</h1>
     <p><b>Orden:</b> {row['buy_order']}</p>
     <p><b>Cliente:</b> {row['user_email'] or 'Invitado'}</p>
     <p><b>Total:</b> CLP {int(row['total']):,}</p>
