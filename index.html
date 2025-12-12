@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Comercial LUFA</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+<div class="brand">Comercial LUFA</div>
+<div class="top-actions">
+<button id="goShop">Tienda</button>
+<button id="loginTop">Iniciar sesión</button>
+<button id="registerTop">Registrarse</button>
+<button id="cartTop" class="secondary">Carrito</button>
+<button id="profileTop" class="hidden">Perfil</button>
+<button id="goAdmin" class="hidden">Admin</button>
+<button id="logout" class="hidden">Cerrar sesión</button>
+</div>
+</header>
+
+<main>
+<section id="loginSection" class="card hidden">
+<h1>Iniciar sesión</h1>
+<div class="muted">Admin: correo <b>admin</b>, contraseña <b>admin123</b></div>
+<div id="authMsg" class="msg hidden"></div>
+<div class="form">
+  <label>Correo</label>
+  <input id="loginEmail" type="email" placeholder="correo" />
+  <label>Contraseña</label>
+  <input id="loginPass" type="password" placeholder="contraseña" />
+  <button id="loginBtn">Entrar</button>
+</div>
+</section>
+
+<section id="registerSection" class="card hidden">
+<h1>Registrarse</h1>
+<div class="form">
+  <label>Nombre</label>
+  <input id="regName" type="text" placeholder="nombre" />
+  <label>Correo</label>
+  <input id="regEmail" type="email" placeholder="correo" />
+  <label>Contraseña</label>
+  <input id="regPass" type="password" placeholder="contraseña" />
+  <button id="registerBtn">Registrarse</button>
+</div>
+</section>
+
+<section id="shopSection" class="hidden">
+<div class="section-header">
+<h2>Catálogo</h2>
+<div id="welcome"></div>
+</div>
+<div id="catalog" class="grid"></div>
+</section>
+
+<section id="adminSection" class="hidden">
+<h2>Administrador</h2>
+<div class="admin-grid">
+<div class="card">
+<h3>Agregar producto</h3>
+<div class="form">
+<label>Nombre</label>
+<input id="newName" type="text" />
+<label>Precio</label>
+<input id="newPrice" type="number" step="0.01" />
+<label>Imagen URL (opcional)</label>
+<input id="newImage" type="url" />
+<label>Imagen local (opcional)</label>
+<input id="newImageFile" type="file" accept="image/*" />
+<button id="addProductBtn">Agregar</button>
+</div>
+</div>
+<div class="card">
+<h3>Productos</h3>
+<div id="adminProducts"></div>
+</div>
+<div class="card">
+<h3>Pedidos (simulados)</h3>
+<div id="adminOrdersCount"></div>
+<div id="adminOrders"></div>
+</div>
+</div>
+</section>
+
+<section id="cartSection" class="card hidden">
+<h2>Carrito</h2>
+<div id="cartMsg" class="msg hidden"></div>
+<div id="cartItemsPage"></div>
+<div class="cart-total">
+<span>Total:</span>
+<span id="cartTotalPage"></span>
+</div>
+<button id="checkoutBtn">Pagar con Webpay</button>
+</section>
+
+<section id="profileSection" class="card hidden">
+<h2>Perfil</h2>
+<div class="form">
+<div>Nombre: <span id="profileName"></span></div>
+<div>Correo: <span id="profileEmail"></span></div>
+<div>Rol: <span id="profileRole"></span></div>
+</div>
+</section>
+</main>
+
+<footer class="footer">© Comercial LUFA</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
